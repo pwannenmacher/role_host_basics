@@ -1,0 +1,49 @@
+---
+# tasks file for role_host_basics
+- name: Update and upgrade apt packages
+  become: true
+  ansible.builtin.apt:
+    upgrade: false
+    autoremove: true
+    autoclean: true
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Merge default and additional packages
+  set_fact:
+    host_basic_packages: "{{ host_basic_default_packages + host_basic_additional_packages | default([]) }}"
+
+- name: Install useful packages
+  ansible.builtin.apt:
+    name: "{{ host_basic_packages }}"
+
+- name: Check current Timezone
+  ansible.builtin.command: timedatectl show --property=Timezone --value
+  register: timezone_output
+  changed_when: false
+
+- name: Set timezone
+  ansible.builtin.command:
+    cmd: timedatectl set-timezone "{{ timezone }}"
+  changed_when: timezone_output.stdout != timezone
+
+- name: Enable network time synchronization
+  ansible.builtin.command:
+    cmd: timedatectl set-ntp true
+  changed_when: false
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+    use: systemd
+  when: hostname is defined
+  notify: Reboot
+
+- name: Disable ufw on peers
+  community.general.ufw:
+    state: disabled
+  when: not ufw_enabled | bool
+
+- name: Flush Handlers
+  ansible.builtin.meta: flush_handlers
