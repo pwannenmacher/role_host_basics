@@ -11,7 +11,7 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Merge default and additional packages
-  set_fact:
+  ansible.builtin.set_fact:
     host_basic_packages: "{{ host_basic_default_packages + host_basic_additional_packages | default([]) }}"
 
 - name: Install useful packages
