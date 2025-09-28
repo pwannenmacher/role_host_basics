@@ -1,21 +1,23 @@
 ---
 # defaults file for role_host_basics
 host_basic_default_packages:
-  - ufw
-  - htop
-  - mc
-  - nmap
-  - nano
   - curl
-  - net-tools
-  - openssh-client
-  - python3-pip
   - git
-  - rsync
+  - htop
   - libffi-dev
   - libssl-dev
-  - tree
+  - mc
+  - nano
+  - ncdu
+  - net-tools
+  - nmap
+  - openssh-client
+  - python3-pip
+  - rsync
   - systemd-timesyncd
+  - tmux
+  - tree
+  - ufw
 host_basic_additional_packages: []
 timezone: "Etc/UTC"
 ufw_enabled: false
