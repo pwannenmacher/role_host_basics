@@ -8,7 +8,7 @@
     autoclean: true
     update_cache: true
     cache_valid_time: 3600
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu'
 
 - name: Merge default and additional packages
   ansible.builtin.set_fact:
